@@ -1,0 +1,3 @@
+2025-07-18 00:31:54,623 - root - INFO - add(5.0, 6.0) = 11.0
+2025-07-18 00:34:02,864 - root - ERROR - Division by zero attempted.
+2025-07-18 00:34:02,866 - root - ERROR - ValueError: Cannot divide by zero.

@@ -1,0 +1,14 @@
+[
+    {
+        "level": "INFO",
+        "message": "Service started"
+    },
+    {
+        "level": "WARNING",
+        "message": "Disk space low"
+    },
+    {
+        "level": "ERROR",
+        "message": "Failed to connect"
+    }
+]
