@@ -1,4 +1,4 @@
-# Demonstrates Object Oriented Programming in Python
+# Demonstrates Object-Oriented Programming in Python
 
 class Book:
     def __init__(self, title, author):
