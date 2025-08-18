@@ -1,5 +1,5 @@
 import pytest
-from section_01_foundations.ch02_syntax_core.calculator import add, sub, mul, div
+from calculator import add, sub, mul, div
 
 def test_addition():
     assert add(1, 2) == 3

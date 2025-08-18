@@ -6,13 +6,22 @@ import time
 from typing import Optional
 from pathlib import Path
 
-@dataclass
+@dataclass(frozen=True)
 class RunResult:
     exit_code: int
     stdout: str
     stderr: str
     image: str
     runtime_ms: int
+
+    def to_dict(self) -> dict:
+        return {
+            "exit_code": self.exit_code,
+            "stdout": self.stdout,
+            "stderr": self.stderr,
+            "image": self.image,
+            "runtime_ms": self.runtime_ms,
+        }
 
 
 class AbstractDockerRunner(ABC):
@@ -30,7 +39,7 @@ class PythonDockerRunner(AbstractDockerRunner):
             script_file: str,
             *,
             image: str = "python:3.10-slim",
-            cpus: str = "1",
+            cpus: int = 1,
             memory: str = "256m",
             network_none: bool = True,
             timeout_sec: Optional[int] = 30,
@@ -39,6 +48,7 @@ class PythonDockerRunner(AbstractDockerRunner):
             script_name_override: Optional[str] = None,
             workdir_in_container: str = "/work",
             readonly_mount: bool = True,
+            container_platform: Optional[str] = None
     ) -> None:
         self.script_path = Path(script_file).resolve()
         self.script_filename = "script.py"
@@ -52,6 +62,7 @@ class PythonDockerRunner(AbstractDockerRunner):
         self.docker_cli = docker_cli
         self.workdir = workdir_in_container
         self.readonly_mount = readonly_mount
+        self.container_platform = container_platform
         # If you want to force the name inside container (rare), pass override;
         # otherwise we use the actual filename of the provided script.
         self.script_name = script_name_override or self.script_path.name
@@ -78,15 +89,24 @@ class PythonDockerRunner(AbstractDockerRunner):
             "docker", "run", "--rm",
             "-v", mount_flag,
             "-w", self.workdir,
-            "--cpus", self.cpus,
             "--memory", self.memory,
         ]
+
+        # Validate cpu
+        if 0 < self.cpus < 9:
+            cmd.extend(["--cpus", str(self.cpus)])
+        else:
+            logger.error(f"cpus {self.cpus} not supported")
+
 
         if self.network_none:
             cmd.extend(["--network", "none"])
 
         if self.user:
             cmd.extend(["--user", self.user])
+
+        if self.container_platform:
+            cmd.extend(["--platform", self.container_platform])
 
         cmd.extend([self.image, "python", self.script_name])
 
@@ -170,6 +190,7 @@ class JavaScriptDockerRunner(AbstractDockerRunner):
             script_name_override: Optional[str] = None,
             workdir_in_container: str = "/work",
             readonly_mount: bool = True,
+            container_platform: Optional[str] = None
     ) -> None:
         self.script_path = Path(script_file).resolve()
         self.script_filename = "script.js"
@@ -183,6 +204,7 @@ class JavaScriptDockerRunner(AbstractDockerRunner):
         self.docker_cli = docker_cli
         self.workdir = workdir_in_container
         self.readonly_mount = readonly_mount
+        self.container_platform = container_platform
         # If you want to force the name inside container (rare), pass override;
         # otherwise we use the actual filename of the provided script.
         self.script_name = script_name_override or self.script_path.name
@@ -218,6 +240,9 @@ class JavaScriptDockerRunner(AbstractDockerRunner):
 
         if self.user:
             cmd.extend(["--user", self.user])
+
+        if self.container_platform:
+            cmd.extend(["--platform", self.container_platform])
 
         cmd.extend([self.image, "node", self.script_name])
 

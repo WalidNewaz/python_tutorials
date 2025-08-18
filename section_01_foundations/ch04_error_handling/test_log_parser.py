@@ -1,5 +1,5 @@
 import json
-from section_01_foundations.ch04_error_handling.log_parser import parse_log_file
+from log_parser import parse_log_file
 
 def test_log_parser(tmp_path):
     log_file = tmp_path / "server.log"
