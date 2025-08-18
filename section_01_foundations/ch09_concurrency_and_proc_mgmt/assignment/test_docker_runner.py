@@ -1,7 +1,31 @@
+import sys
+import types
 from pathlib import Path
+
+# -------------------------------------------------------------------
+# Ensure tests don't break if loguru isn't installed in the environment
+# -------------------------------------------------------------------
+try:
+    from loguru import logger
+except ModuleNotFoundError:
+    fake_logger = types.SimpleNamespace(
+        info=lambda *a, **k: None,
+        warning=lambda *a, **k: None,
+        error=lambda *a, **k: None,
+        exception=lambda *a, **k: None,
+    )
+    sys.modules["loguru"] = types.SimpleNamespace(logger=fake_logger)
+    from loguru import logger  # now safe to import
+
+# rest of your imports
 import subprocess
 import pytest
-
+from docker_runner import (
+    RunResult,
+    PythonDockerRunner,
+    JavaScriptDockerRunner,
+    DockerCLI,
+)
 from docker_runner import (
     PythonDockerRunner,
     JavaScriptDockerRunner,
@@ -9,6 +33,16 @@ from docker_runner import (
 )
 
 # ---------- Test doubles ----------
+
+# Create a dummy logger if loguru is missing
+if "loguru" not in sys.modules:
+    fake_logger = types.SimpleNamespace(
+        info=lambda *a, **k: None,
+        warning=lambda *a, **k: None,
+        error=lambda *a, **k: None,
+        exception=lambda *a, **k: None,
+    )
+    sys.modules["loguru"] = types.SimpleNamespace(logger=fake_logger)
 
 class StubCLI:
     """
