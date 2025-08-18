@@ -1,47 +1,99 @@
 from docker_runner import *
 import os
-import textwrap
 import logging
+import tempfile
+from pathlib import Path
+from typing import Optional
 
+# Application logger
 logging.basicConfig(
     filename="docker_runner.log",
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 )
 
-# Step 1: Define the Python code to be run inside the container
-logging.info("Define the Python code to be run inside the container")
-python_code = textwrap.dedent("""
-print("Hello from inside Docker!")
-for i in range(5):
-    print(f"Processing item {i + 1}")                              
-""")
+# Application Constants
+scripts_dir = "scripts"
 python_code_filename = "app.py"
-
-logging.info("Define the JavaScript code to be run inside the container")
-javascript_code = textwrap.dedent("""
-console.log("Hello from inside Docker!")
-for (let i = 0; i < 5; i++){
-    console.log(`Processing item ${i + 1}`)
-}
-""")
 js_code_filename = "app.js"
 
-if __name__ == "__main__":
-    # Python: Create a temporary Python file
-    temp_dir = tempfile.mkdtemp()
-    python_file_path = os.path.join(temp_dir, python_code_filename)
-    code_runner = PythonDockerRunner(python_code, python_code_filename, temp_dir)
-    # Run the container and save the result
-    py_result = code_runner.run()
-    print("[INFO] Output from Py container:\n", py_result.stdout)
-    logging.info(f"Output from Py container: {py_result.stdout}")
 
-    # JavaScript: Create the temporary JavaScript file
-    js_temp_dir = tempfile.mkdtemp()
-    js_file_path = os.path.join(js_temp_dir, js_code_filename)
-    js_runner = JavaScriptDockerRunner(javascript_code, js_code_filename, js_temp_dir)
+def run_script(script_type, script_src) -> str :
+    """
+    Instantiates and invokes the correct code runner based on the script type.
+    :param script_type:
+    :param script_src:
+    :return:
+    """
+    # Create the temporary file
+    temp_dir = tempfile.mkdtemp()
+    temp_filepath: str = ""
+    runner: Optional[AbstractDockerRunner] = None
+    if script_type == "python":
+        temp_filepath = os.path.join(temp_dir, python_code_filename)
+        with open(temp_filepath, "w") as f:
+            f.write(script_src)
+        logging.info(f"Created {script_type} file at {temp_filepath}")
+        runner = PythonDockerRunner(temp_filepath)
+    elif script_type == "javascript":
+        temp_filepath = os.path.join(temp_dir, js_code_filename)
+        with open(temp_filepath, "w") as f:
+            f.write(script_src)
+        logging.info(f"Created {script_type} file at {temp_filepath}")
+        runner = JavaScriptDockerRunner(temp_filepath)
+
     # Run the container and save the result
-    js_result = js_runner.run()
-    print("[INFO] Output from JS container:\n", js_result.stdout)
-    logging.info(f"Output from JS container: {js_result.stdout}")
+    result = runner.run()
+    # Remove the temporary file
+    os.remove(temp_filepath)
+    os.rmdir(temp_dir)
+    logging.info("Cleanup complete")
+    return result.stdout
+
+def get_script_type(file_path):
+    """
+    Reads the file path suffix and determines whether it is a JavaScript file
+    or a Python script
+    :param file_path:
+    :return:
+    """
+    if file_path.suffix == ".py":
+        return "python"
+    elif file_path.suffix == ".js":
+        return "javascript"
+    else:
+        return None
+
+def main():
+    """
+    Executes all the scripts in the scripts directory.
+    :return:
+    """
+    scripts_dir_path = Path(scripts_dir)
+
+    if not scripts_dir_path.exists() or not scripts_dir_path.is_dir():
+        print(f"Scripts directory '{scripts_dir_path}' not found.")
+        return
+
+    script_files = [
+        p.resolve()
+            for p in scripts_dir_path.glob("**/*")
+            if p.suffix in {".js", ".py"}
+    ]
+    if not script_files:
+        print("No script files found.")
+        return
+
+    for script_file in script_files:
+        with open(script_file, "r") as f_in:
+            content = f_in.read()
+            script_type = get_script_type(script_file)
+            print(f"Executing {script_type}:\n--------------------------\n{content}")
+            result = run_script(script_type, content)
+            print("[INFO] Output from JS container:\n", result)
+            logging.info(f"Output from JS container: {result}")
+
+
+if __name__ == "__main__":
+    main()
+
