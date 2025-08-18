@@ -1,8 +1,6 @@
-import os
 import tempfile
 from pathlib import Path
 from typing import Optional
-from dotenv import load_dotenv
 from docker_runner import *
 from logging_config import *
 from loguru import logger
@@ -13,11 +11,11 @@ load_dotenv()
 # Application Constants
 SCRIPTS_DIR = os.getenv('SCRIPTS_DIR')
 LOGS_DIR = os.getenv('LOGS_DIR')
-python_code_filename = "app.py"
-js_code_filename = "app.js"
+python_code_filename = os.getenv('PYTHON_CODE_FILENAME')
+js_code_filename = os.getenv('JAVASCRIPT_CODE_FILENAME')
 
 
-def run_script(script_type, script_src) -> str :
+def run_script(script_type, script_src) :
     """
     Instantiates and invokes the correct code runner based on the script type.
     :param script_type:
@@ -47,7 +45,7 @@ def run_script(script_type, script_src) -> str :
     os.remove(temp_filepath)
     os.rmdir(temp_dir)
     logger.info("Cleanup complete")
-    return result.stdout
+    return result
 
 def get_script_type(file_path):
     """
@@ -71,7 +69,7 @@ def main():
     scripts_dir_path = Path(SCRIPTS_DIR)
 
     if not scripts_dir_path.exists() or not scripts_dir_path.is_dir():
-        print(f"Scripts directory '{scripts_dir_path}' not found.")
+        logger.warning(f"Scripts directory '{scripts_dir_path}' not found.")
         return
 
     script_files = [
@@ -80,17 +78,19 @@ def main():
             if p.suffix in {".js", ".py"}
     ]
     if not script_files:
-        print("No script files found.")
+        logger.warning("No script files found.")
         return
 
     for script_file in script_files:
         with open(script_file, "r") as f_in:
             content = f_in.read()
             script_type = get_script_type(script_file)
-            print(f"Executing {script_type}:\n--------------------------\n{content}")
+            logger.debug(f"\nExecuting {script_type}:\n--------------------------\n{content}")
             result = run_script(script_type, content)
-            print("[INFO] Output from JS container:\n", result)
-            logger.info(f"Output from JS container: {result}")
+            logger.debug(
+                f"\nContainer: {result.image}"
+                f"\nElapsed: {result.runtime_ms}ms"
+                f"\nOutput:\n--------------------------\n{result.stdout}")
 
 
 if __name__ == "__main__":
