@@ -1,19 +1,18 @@
-from docker_runner import *
 import os
-import logging
 import tempfile
 from pathlib import Path
 from typing import Optional
+from dotenv import load_dotenv
+from docker_runner import *
+from logging_config import *
+from loguru import logger
 
-# Application logger
-logging.basicConfig(
-    filename="docker_runner.log",
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-)
+# Load environment variables from the .env file (if present)
+load_dotenv()
 
 # Application Constants
-scripts_dir = "scripts"
+SCRIPTS_DIR = os.getenv('SCRIPTS_DIR')
+LOGS_DIR = os.getenv('LOGS_DIR')
 python_code_filename = "app.py"
 js_code_filename = "app.js"
 
@@ -33,13 +32,13 @@ def run_script(script_type, script_src) -> str :
         temp_filepath = os.path.join(temp_dir, python_code_filename)
         with open(temp_filepath, "w") as f:
             f.write(script_src)
-        logging.info(f"Created {script_type} file at {temp_filepath}")
+        logger.info(f"Created {script_type} file at {temp_filepath}")
         runner = PythonDockerRunner(temp_filepath)
     elif script_type == "javascript":
         temp_filepath = os.path.join(temp_dir, js_code_filename)
         with open(temp_filepath, "w") as f:
             f.write(script_src)
-        logging.info(f"Created {script_type} file at {temp_filepath}")
+        logger.info(f"Created {script_type} file at {temp_filepath}")
         runner = JavaScriptDockerRunner(temp_filepath)
 
     # Run the container and save the result
@@ -47,7 +46,7 @@ def run_script(script_type, script_src) -> str :
     # Remove the temporary file
     os.remove(temp_filepath)
     os.rmdir(temp_dir)
-    logging.info("Cleanup complete")
+    logger.info("Cleanup complete")
     return result.stdout
 
 def get_script_type(file_path):
@@ -69,7 +68,7 @@ def main():
     Executes all the scripts in the scripts directory.
     :return:
     """
-    scripts_dir_path = Path(scripts_dir)
+    scripts_dir_path = Path(SCRIPTS_DIR)
 
     if not scripts_dir_path.exists() or not scripts_dir_path.is_dir():
         print(f"Scripts directory '{scripts_dir_path}' not found.")
@@ -91,7 +90,7 @@ def main():
             print(f"Executing {script_type}:\n--------------------------\n{content}")
             result = run_script(script_type, content)
             print("[INFO] Output from JS container:\n", result)
-            logging.info(f"Output from JS container: {result}")
+            logger.info(f"Output from JS container: {result}")
 
 
 if __name__ == "__main__":

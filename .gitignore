@@ -4,3 +4,6 @@
 
 # Misc file formats
 .gz
+.venv
+.env
+
