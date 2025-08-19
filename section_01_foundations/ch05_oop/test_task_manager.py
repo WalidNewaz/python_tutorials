@@ -19,13 +19,14 @@ def test_complete_task(manager):
     manager.tasks[0].completed = True
     assert manager.tasks[0].completed is True
 
-# def test_list_tasks(manager):
-#     manager.add_task(SimpleTask("test task", "description"))
-#     manager.add_task(SimpleTask("test task2"))
-#     tasks = manager.list_tasks()
-#     assert len(tasks) == 2
-#     assert "[Pending] test task: description" in tasks[0]
-#     assert "[Pending] test task2" in tasks[1]
+@pytest.mark.skip(reason="This test is temporarily disabled")
+def test_list_tasks(manager):
+    manager.add_task(SimpleTask("test task", "description"))
+    manager.add_task(SimpleTask("test task2"))
+    tasks = manager.list_tasks()
+    assert len(tasks) == 2
+    assert "[Pending] test task: description" in tasks[0]
+    assert "[Pending] test task2" in tasks[1]
 
 def test_filter_tasks(manager):
     t1 = manager.add_task(SimpleTask("test task 1", "description"))
