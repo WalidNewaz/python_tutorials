@@ -19,11 +19,22 @@ def process_seq(name):
         for line in f:
             processed_line = line.strip()
             if len(processed_line) > 0:
-                # print(line)
                 num_lines += 1
                 num_chars += len(processed_line)
         time.sleep(2)  # simulates file processing
     return num_lines, num_chars
+
+def process_files_seq(files):
+    start = time.perf_counter()
+    total_lines = 0
+    total_chars = 0
+    for file in files:
+        seq_lines, seq_chars = process_seq(file)
+        total_lines += seq_lines
+        total_chars += seq_chars
+
+    dur = f"{(time.perf_counter() - start):.2f} s"
+    return dur, total_lines, total_chars
 
 def process_thread(name):
     print(f"Processing {name}...")
@@ -33,11 +44,36 @@ def process_thread(name):
         for line in f:
             processed_line = line.strip()
             if len(processed_line) > 0:
-                # print(line)
                 num_lines += 1
                 num_chars += len(processed_line)
         time.sleep(2)  # simulates file processing
     q.put((num_lines, num_chars))
+
+def process_files_threaded(files):
+    start = time.perf_counter()
+    threads = []
+    total_lines = 0
+    total_chars = 0
+    for file in files:
+        thread = threading.Thread(target=process_thread, args=(file,))
+        threads.append(thread)
+
+    # Start all the threads
+    for thread in threads:
+        thread.start()
+
+    # Join all threads
+    for thread in threads:
+        thread.join()
+
+    # Parse return values
+    while q.qsize() > 0:
+        num_lines, num_chars = q.get()
+        total_lines += num_lines
+        total_chars += num_chars
+
+    dur = f"{(time.perf_counter() - start):.2f} s"
+    return dur, total_lines, total_chars
 
 def process_files_multiprocessing(files):
     start = time.perf_counter()
@@ -72,8 +108,7 @@ async def process_files_async(files):
     start = time.perf_counter()
     results = []
 
-    async with asyncio.TaskGroup() as tg:
-        tasks = [asyncio.create_task(process_file_async(file)) for file in files]
+    tasks = [asyncio.create_task(process_file_async(file)) for file in files]
 
     for task in tasks:
         results.append(await task)
@@ -89,46 +124,12 @@ def main():
     # Sequential processing
     print("Starting sequential processing...")
     print( "----------------------------------------------------------")
-    seq_start = time.perf_counter()
-    total_seq_lines = 0
-    total_seq_chars = 0
-    for file in files:
-        seq_lines, seq_chars = process_seq(file)
-        total_seq_lines += seq_lines
-        total_seq_chars += seq_chars
-        # print(f"Lined {seq_lines} lines and {seq_chars} characters.")
-
-    seq_end = time.perf_counter()
-    seq_dur = f"{(seq_end - seq_start):.2f} s"
-
+    seq_dur, total_seq_lines, total_seq_chars = process_files_seq(files)
 
     # Threaded processing
     print("Starting concurrent thread processing...")
     print("----------------------------------------------------------")
-    thread_start = time.perf_counter()
-    threads = []
-    total_thread_lines = 0
-    total_thread_chars = 0
-    for file in files:
-        thread = threading.Thread(target=process_thread, args=(file,))
-        threads.append(thread)
-
-    # Start all the threads
-    for thread in threads:
-        thread.start()
-
-    # Join all threads
-    for thread in threads:
-        thread.join()
-
-    # Parse return values
-    while q.qsize() > 0:
-        num_lines, num_chars = q.get()
-        total_thread_lines += num_lines
-        total_thread_chars += num_chars
-
-    thread_end = time.perf_counter()
-    thread_dur = f"{(thread_end - thread_start):.2f} s"
+    thread_dur, total_thread_lines, total_thread_chars = process_files_threaded(files)
 
     # Multiprocessing
     print("Starting concurrent multiprocessing...")
