@@ -24,6 +24,21 @@ def run_any(func: Callable[..., str]) -> str:
 def concatenate(a: str, b: str) -> str:
     return a + " " + b
 
+# --- Strategy pattern --------------------------
+class Calculator:
+    def __init__(self, operation: Callable[[int, int], int]):
+        self.operation = operation
+
+    def compute(self, a: int, b: int) -> int:
+        return self.operation(a, b)
+
+# Different Strategies
+add = lambda x, y: x + y
+mul = lambda x, y: x * y
+
+calc_add = Calculator(add)
+calc_mul = Calculator(mul)
+
 # --- Tests --------------------------------
 print(apply_twice(square, 3))
 
@@ -31,7 +46,8 @@ print(operate(divide, 10, 2))
 
 print(run_any(concatenate))
 
-
+print(calc_add.compute(2, 3))  # 5
+print(calc_mul.compute(2, 3))  # 6
 
 
 
