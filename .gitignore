@@ -3,9 +3,13 @@
 .venv
 
 # Misc file formats
-.gz
+**/*.gz
 .venv
 .env
+**/*.log
+
+# Build artifacts
+**/*.whl
 
 # Tests
 .coverage

@@ -1,0 +1,27 @@
+[project]
+name = "walidnewaz-test-myapp"
+version = "0.1.0"
+description = "An example Python app using Poetry"
+authors = [
+    {name = "Walid Newaz",email = "mdwalid@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+]
+
+[tool.poetry]
+packages = [{include = "walidnewaz_test_myapp", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+requests = "^2.31"
+pydantic = "^2.0"
+fastapi = "^0.116.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
