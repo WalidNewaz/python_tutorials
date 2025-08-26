@@ -1,41 +1,79 @@
-# Python for Modern Developers – Tutorial Example Project
+# Python for Modern Developers
 
-This repository contains example code from the **Python for Modern Developers** tutorial series by Walid S Newaz.
+This repository contains the **companion code and solutions** for the tutorial series **Python for Modern Developers: From Basics to AI-Driven Applications**.
 
-## 🧱 Sections Covered
+The series is designed to take readers from the fundamentals of Python programming all the way to building **production-ready applications**, including **web apps, scalable systems, and AI/ML integrations**.
 
-- CLI tools and core syntax
-- FastAPI and Django apps
-- Async programming and task queues
-- SQL/NoSQL DB interactions
-- ML/AI integration
-- Cloud deployment and Docker
+---
 
-## 🚀 Running the FastAPI App
+## 📂 Repository Structure
 
-### Development
+This repo is organized like a **mono-repo**.  
+Each **section** in the series is represented as a top-level directory, and each **chapter** lives inside its section.
+
+```
+/
+├── section_01_foundations/
+│   ├── chapter_01_env_setup/
+│   ├── chapter_02_syntax_core/
+│   ├── chapter_03_files_io/
+│   └── ...
+├── section_02_web_apps/
+│   ├── chapter_15_fastapi_intro/
+│   ├── chapter_16_django_basics/
+│   └── ...
+├── section_03_databases/
+│   └── ...
+...
+````
+
+Within each **chapter directory**, you will find:
+
+- `code/` → runnable code examples from the book
+- `resources/` → datasets, sample files, or other supporting material
+- `assignments/` → starter files and solutions for chapter assignments
+- `README.md` → notes and usage instructions
+
+---
+
+## 📖 Tutorial Syllabus
+
+The full syllabus is tracked in [`SYLLABUS.md`](SYLLABUS.md).  
+Highlights include:
+
+- **Foundations**: syntax, files, OOP, DSA, concurrency, design patterns
+- **Web Development**: FastAPI, Django, API security
+- **Databases**: SQL, NoSQL, ORMs
+- **Async & Background Work**: asyncio, Celery
+- **Scalability**: configuration, testing, packaging, deployment
+- **Data & AI**: Pandas, NumPy, scikit-learn, LangChain
+- **Production Readiness**: monitoring, event-driven, serverless
+
+---
+
+## 🚀 Getting Started
+
+Clone the repo:
 
 ```bash
+git clone https://github.com/WalidNewaz/python_tutorials.git
+cd python_tutorials
+````
+
+Set up a virtual environment:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate   # or `.venv\Scripts\activate` on Windows
 pip install -r requirements.txt
-uvicorn app.main:app --reload
 ```
 
-### Using Docker
+Navigate into a section and run the examples:
 
 ```bash
-docker-compose up --build
+cd section_01_foundations/chapter_02_syntax_core/code
+python calculator.py
 ```
 
-## 🧪 Running Tests
 
-```bash
-pytest
-```
 
-## 📦 Project Structure
-
-- `app/` – FastAPI backend app code
-- `tests/` – Unit and integration tests
-- `shared_libs/` – Reusable modules (utils, DB, AI)
-- `.env` – Configuration
-- `docker-compose.yml` – Dev environment setup
