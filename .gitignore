@@ -1,11 +1,10 @@
 # IDE Related
 .idea
 .venv
+.env
 
 # Misc file formats
 **/*.gz
-.venv
-.env
 **/*.log
 
 # Build artifacts
