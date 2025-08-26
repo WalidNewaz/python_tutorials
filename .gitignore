@@ -2,6 +2,7 @@
 .idea
 .venv
 .env
+**/Setup.iml
 
 # Misc file formats
 **/*.gz
@@ -9,7 +10,14 @@
 
 # Build artifacts
 **/*.whl
+**/dist/*
+**/*.egginfo
+**/dependency_links.txt
+**/PKG-INFO
+**/SOURCES.txt
+**/top_level.txt
 
 # Tests
 .coverage
 /htmlcov
+
