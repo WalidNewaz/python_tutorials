@@ -1,0 +1,7 @@
+Metadata-Version: 2.4
+Name: finance-app
+Version: 0.1.0
+Summary: Personal Finance CLI app
+Author-email: Walid Newaz <walid@example.com>
+Requires-Dist: requests
+Requires-Dist: pydantic

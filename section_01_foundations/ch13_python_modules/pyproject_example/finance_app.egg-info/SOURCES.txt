@@ -1,0 +1,6 @@
+pyproject.toml
+finance_app.egg-info/PKG-INFO
+finance_app.egg-info/SOURCES.txt
+finance_app.egg-info/dependency_links.txt
+finance_app.egg-info/requires.txt
+finance_app.egg-info/top_level.txt
