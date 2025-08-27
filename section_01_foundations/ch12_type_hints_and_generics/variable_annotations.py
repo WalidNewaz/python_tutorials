@@ -14,7 +14,7 @@ class User:
     email: Optional[str] = None
 
     def __str__(self) -> str:
-        return f"User(id={self.id}, name={self.name}, email={self.email or "N/A"})"
+        return f"User(id={self.id}, name={self.name}, email={self.email or 'N/A'})"
 
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, name={self.name!r}, email={self.email!r})"
