@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 import sys
 
-# Command interface
+# --- Command interface --------------------------------
 class Command(ABC):
     @abstractmethod
     def execute(self) -> None:
         pass
 
-# Concrete commands
+# --- Concrete commands --------------------------------
 class InitCommand(Command):
     def execute(self) -> None:
         print("Project initialized!")
