@@ -1,6 +1,5 @@
 import argparse
-from commands.add import AddTaskCommand
-from commands.list import ListTasksCommand
+from commands import AddTaskCommand, ListTasksCommand
 
 parser = argparse.ArgumentParser()
 parser.add_argument("command", choices=["add", "list"])
