@@ -4,5 +4,8 @@
   },
   {
     "task": "Write chapter on DSA"
+  },
+  {
+    "task": "Test CLI"
   }
 ]
