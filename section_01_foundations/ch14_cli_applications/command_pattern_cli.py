@@ -34,7 +34,7 @@ def main():
 
     command = sys.argv[1]
     cmd_class = COMMANDS.get(command)
-    if command is None:
+    if cmd_class is None:
         print("Usage: {} [init|run|deploy]".format(sys.argv[0]))
         return
 
