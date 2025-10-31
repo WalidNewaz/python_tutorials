@@ -13,26 +13,11 @@ Each **section** in the series is represented as a top-level directory, and each
 
 ```
 /
-├── section_01_foundations/
-│   ├── chapter_01_env_setup/
-│   ├── chapter_02_syntax_core/
-│   ├── chapter_03_files_io/
-│   └── ...
-├── section_02_web_apps/
-│   ├── chapter_15_fastapi_intro/
-│   ├── chapter_16_django_basics/
-│   └── ...
-├── section_03_databases/
-│   └── ...
-...
+├── chapter_01_env_setup/
+├── chapter_02_syntax_core/
+├── chapter_03_files_io/
+└── ...
 ````
-
-Within each **chapter directory**, you will find:
-
-- `code/` → runnable code examples from the book
-- `resources/` → datasets, sample files, or other supporting material
-- `assignments/` → starter files and solutions for chapter assignments
-- `README.md` → notes and usage instructions
 
 ---
 
@@ -41,13 +26,12 @@ Within each **chapter directory**, you will find:
 The full syllabus is tracked in [`SYLLABUS.md`](SYLLABUS.md).  
 Highlights include:
 
-- **Foundations**: syntax, files, OOP, DSA, concurrency, design patterns
-- **Web Development**: FastAPI, Django, API security
-- **Databases**: SQL, NoSQL, ORMs
-- **Async & Background Work**: asyncio, Celery
-- **Scalability**: configuration, testing, packaging, deployment
-- **Data & AI**: Pandas, NumPy, scikit-learn, LangChain
-- **Production Readiness**: monitoring, event-driven, serverless
+- Core Python Language
+- Error Handling, Debugging and Testing
+- Object-Oriented and Functional Python
+- Python’s Built-in Tools
+- Concurrency and Patterns
+- Packaging, CLI, and Distribution
 
 ---
 
@@ -71,7 +55,7 @@ pip install -r requirements.txt
 Navigate into a section and run the examples:
 
 ```bash
-cd section_01_foundations/chapter_02_syntax_core/code
+cd chapter_02_syntax_core
 python calculator.py
 ```
 
