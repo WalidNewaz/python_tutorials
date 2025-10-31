@@ -1,8 +1,8 @@
-# Python for Modern Developers
+# Python Foundations Series
 
-This repository contains the **companion code and solutions** for the tutorial series **Python for Modern Developers: From Basics to AI-Driven Applications**.
+This repository contains the **companion code and solutions** for the tutorial series [Python Foundations Series](https://www.walidnewaz.com/learn/python/).
 
-The series is designed to take readers from the fundamentals of Python programming all the way to building **production-ready applications**, including **web apps, scalable systems, and AI/ML integrations**.
+The series is designed to take readers from the fundamentals of Python programming all the way to building **production-ready applications**. This course will lay the groundwork for future courses focused on web applications, data analytics, machine learning, and artificial intelligence topics.
 
 ---
 
